@@ -1,28 +1,20 @@
-import React from 'react';
-// import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import api from './../../Api';
+
+import { 
+  Container, Grid, CssBaseline, makeStyles, Drawer,
+  Toolbar, List, Typography, Divider, IconButton, 
+  Box, AppBar, TextField, Button, Paper
+}from '@material-ui/core';
+
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { mainListItems, secondaryListItems } from './../../components/listItems';
 import WhatshotIcon from '@material-ui/icons/Whatshot';
 
-import { useHistory } from 'react-router-dom';
-// import api from './../../Api';
-
+import { mainListItems, secondaryListItems } from './../../components/listItems';
 
 function Copyright() {
   return (
@@ -114,13 +106,16 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: 240,
+    height: 350,
   },
   icon: {
     marginRight: theme.spacing(0.5),
     width: 40,
     height: 40,
   },
+  TextField: {
+    paddingBottom: 10,
+  }
 }));
 
 export default function Dashboard() {
@@ -133,16 +128,46 @@ export default function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
   const history = useHistory();
+  const [posts, setPosts] = useState('');
 
-  // const SaveEmail = localStorage.getItem('email');
-  // const SaveSenha = localStorage.getItem('senha');
+  if(!(localStorage.getItem('flowEmail', 'flowSenha'))){
+    history.push('/');
+  }
 
-  // headers: {
-  //   email: SaveEmail,
-  //   senha: SaveSenha,
-  // }
+  const [de, setDe] = useState('');
+  const [para, setPara] = useState('');
+  const [assunto, setAssunto] = useState('');
+  const [textoGrande, setTextoGrande] = useState('');
+
+  useEffect(() => {
+    api.get(
+      '/posts/listar_post'
+    ).then(response => {
+      setPosts(response.data);
+    })
+  });
+
+  // {posts.map(post => (
+
+  async function HandleSubmit(){
+    try{
+      const data = {
+        de: de,
+        para: para,
+        assunto: assunto,
+        textoGrande: textoGrande,
+      };
+      console.log(data)
+      const resposta = await api.post("/posts/new_post", data);
+      if(resposta.status === 200){
+        alert('Post foi criado');
+      }
+
+    } catch (err) {
+      alert('Houve uma falha ao criar o Post');
+    }
+  }
 
   function handleLogout() {
     localStorage.clear();
@@ -196,7 +221,59 @@ export default function Dashboard() {
             {/* Post */}
             <Grid item xs={12} md={10} lg={12}>
               <Paper className={fixedHeightPaper}>
-                Post
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  id="outlined-basic"
+                  label="De"
+                  type="text"
+                  value={de} 
+                  onChange={e=>setDe(e.target.value)}
+                  className={classes.TextField}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  id="outlined-basic"
+                  label="Para"
+                  type="text"
+                  value={para} 
+                  onChange={e=>setPara(e.target.value)}
+                  className={classes.TextField}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  id="outlined-basic"
+                  label="Assunto"
+                  type="text"
+                  value={assunto} 
+                  onChange={e=>setAssunto(e.target.value)}
+                  className={classes.TextField}
+                  required
+                />
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  id="outlined-basic"
+                  label="Mensagem"
+                  type="text"
+                  value={textoGrande} 
+                  onChange={e=>setTextoGrande(e.target.value)}
+                  className={classes.TextField}
+                  required
+                />
+                <Button
+                  size="medium"
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  onClick={HandleSubmit}
+                >
+                  Confirmar
+                </Button>
               </Paper>
             </Grid>
             {/* Recent Posts */}
