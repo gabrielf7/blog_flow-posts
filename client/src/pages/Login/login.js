@@ -67,7 +67,8 @@ export default function Login() {
       localStorage.setItem('flowSenha', senha);
 
       if(resposta.status === 200){
-        history.push('/dashboard');
+        history.push('/dashboard/');
+        // + resposta.data._id
       }
     } catch (err) {
       alert('Falha no login, tente novamente.');

@@ -115,6 +115,42 @@ const useStyles = makeStyles((theme) => ({
   },
   TextField: {
     paddingBottom: 10,
+  },
+  profileContainer: {
+    width: '100%',
+    maxWidth: '1180px',
+    padding: '0 30px',
+    margin: '32px auto',
+  }, 
+  profileContainerUl: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridGap: '24px',
+    listStyle: 'none',
+  },
+  profileContainerLi: {
+    background:  '#FFF',
+    padding: '24px',
+    borderRadius: '8px',
+    position: 'relative',
+    border: '1px solid #3f51b5'
+
+  },
+  profileContainerButton: {
+    position: 'absolute',
+    right: '24px',
+    top: '24px',
+    border: 0
+  },
+  profileContainerStrong: {
+    display: 'block',
+    marginBottom: '16px',
+    color: '#41414d'
+  },
+  profileContainerP: {
+    color: '#737380',
+    lineHeight: '21px',
+    fontSize: '16px'
   }
 }));
 
@@ -129,7 +165,7 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const history = useHistory();
-  const [posts, setPosts] = useState('');
+  const [posts, setPosts] = useState([]);
 
   if(!(localStorage.getItem('flowEmail', 'flowSenha'))){
     history.push('/');
@@ -147,8 +183,6 @@ export default function Dashboard() {
       setPosts(response.data);
     })
   });
-
-  // {posts.map(post => (
 
   async function HandleSubmit(){
     try{
@@ -279,7 +313,25 @@ export default function Dashboard() {
             {/* Recent Posts */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                Recentes Posts
+                <div className={classes.profileContainer}>
+                  <ul className={classes.profileContainerUl}>
+                    {posts.map((post) => (
+                      <li key={post._id} className={classes.profileContainerLi}>
+                        <strong>De:</strong>
+                        <p className={classes.profileContainerP}>{post.de}</p>
+
+                        <strong>Para:</strong>
+                        <p className={classes.profileContainerP}>{post.para}</p>
+
+                        <strong>Assunto:</strong>
+                        <p className={classes.profileContainerP}>{post.assunto}</p>
+
+                        <strong>Mensagem:</strong>
+                        <p className={classes.profileContainerP}>{post.textoGrande}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </Paper>
             </Grid>
           </Grid>

@@ -72,7 +72,7 @@ export default function SignIn() {
       
       if(resposta.status === 200){
         alert('Cadastrado com Sucesso.');
-        history.push('/login');
+        history.push('/');
       }else{
         if(resposta.status === 500){
           alert('Não cadastrado');
@@ -144,7 +144,7 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item xs={12} style={{ textAlign:"center" }}>
-              <Link to="/login" variant="body2">
+              <Link to="/" variant="body2">
                 {"Já possui uma conta? Faça login"}
               </Link>
             </Grid>
